@@ -1,12 +1,22 @@
 package com.example.service;
 
+import com.example.dto.GetPaymentResult;
+import com.example.dto.GetVerifyCodeResponse;
 import com.example.entity.User;
 import com.example.entity.UserRepository;
+import com.example.payme.controller.BillingService;
+import com.example.payme.dto.CommonResponse;
+import com.example.payme.dto.billing.CardCreateRequest;
+import com.example.payme.dto.billing.CardCreateResponse;
+import com.example.payme.dto.billing.VerifyRequest;
+import com.example.payme.dto.billing.VerifyResponse;
 import com.example.util.Steps;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.json.JSONObject;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.io.BufferedReader;
@@ -19,6 +29,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final BillingService billingService;
 
     public User createUser(Update update) {
         String realId = getRealId(update);
@@ -29,8 +40,6 @@ public class UserService {
         if (userOptional.isEmpty()) {
             User user = new User();
             user.setChatId(chatId);
-            user.setRealId(realId);
-            user.setFullName(tgUser.getFirstName() + (tgUser.getLastName() == null ? "" : " " + tgUser.getLastName()));
             user.setStep(Steps.REGISTERED);
             return userRepository.save(user);
         }
@@ -141,15 +150,12 @@ public class UserService {
 
     public boolean isSubscribed(String channelUsername, String botToken, String chatId) {
         try {
-            // Construct the URL for the Telegram API request
             final String urlStr = "https://api.telegram.org/bot" + botToken + "/getChatMember?chat_id=" + channelUsername + "&user_id=" + chatId;
 
-            // Open connection
             URL url = new URL(urlStr);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            // Check if the response code is 200 (OK)
             if (conn.getResponseCode() == 200) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String inputLine;
@@ -159,22 +165,16 @@ public class UserService {
                     content.append(inputLine);
                 }
 
-                // Close the connections
                 in.close();
                 conn.disconnect();
 
-                // Parse JSON response
                 JSONObject jsonResponse = new JSONObject(content.toString());
 
-                // Check if the 'ok' field is true
                 if (jsonResponse.getBoolean("ok")) {
-                    // Get the 'status' field from the 'result' object
                     String status = jsonResponse.getJSONObject("result").getString("status");
 
-                    // Return true if the user is a member or higher (creator, administrator)
                     return status.equals("member") || status.equals("administrator") || status.equals("creator");
                 } else {
-                    // Handle the case where 'ok' is false (error occurred)
                     return false;
                 }
             } else {
@@ -184,6 +184,29 @@ public class UserService {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+
+    public GetVerifyCodeResponse getVerifyCode(User user) {
+        try {
+            CommonResponse<CardCreateResponse> verifyCode = billingService.getVerifyCode(new CardCreateRequest(user.getCardNumber(), user.getCardExp(), 900000L, user.getChatId()));
+            return new GetVerifyCodeResponse(verifyCode.getSuccess(), verifyCode.getMessage(), new GetVerifyCodeResponse.Item(verifyCode.getItem().getPhone(), verifyCode.getItem().getMessage(), verifyCode.getItem().getTransactionId()));
+        } catch (Exception e) {
+            return new GetVerifyCodeResponse(false, e.getMessage(), null);
+        }
+    }
+
+
+    public GetPaymentResult verify(String verificationCode, User user) {
+        try {
+            CommonResponse<VerifyResponse> verify = billingService.verify(new VerifyRequest(verificationCode, user.getTransactionId()));
+            return new GetPaymentResult(verify.getSuccess(), verify.getMessage(), new GetPaymentResult.Item(
+                    verify.getItem().getTransactionId(),
+                    verify.getItem().getAmount(), verify.getItem().getStatus()
+            ));
+        } catch (Exception e) {
+            return new GetPaymentResult(false, e.getMessage(), new GetPaymentResult.Item());
         }
     }
 

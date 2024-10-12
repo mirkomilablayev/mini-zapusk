@@ -4,6 +4,6 @@ public interface ButtonConst {
 
     String SHARE_CONTACT = "Share Contact ☎️";
     String BACK_MAIN_MENU = "\uD83D\uDD19 Asosiy menyuga";
-
-    String CHECKING = "Keyingi ➡️";
+    String NEXT = "Keyingi ➡️";
+    String EMPTY = "EMPTY";
 }
