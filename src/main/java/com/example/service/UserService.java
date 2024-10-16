@@ -18,9 +18,9 @@ public interface UserService {
 
     SendMessage showChannelAndNext(User user, Update update, String channelUsername, Boolean isSubscribed);
 
-    SendMessage saveCardNumberAndNext(User user, Update update);
+    SendMessage saveCardNumberAndNext(User user, Update update, boolean subscribed, String channelUsername);
 
-    SendMessage saveCardExpAndNext(User user, Update update);
+    SendMessage saveCardExpAndNext(User user, Update update, boolean subscribed, String channelUsername);
 
     SendMessage payAndNext(User user, Update update);
 

@@ -11,6 +11,7 @@ import com.example.payme.dto.billing.VerifyResponse;
 import com.example.service.ButtonService;
 import com.example.service.UserService;
 import com.example.util.ButtonConst;
+import com.example.util.Message;
 import com.example.util.UserStep;
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
     public SendMessage askContact(User user) {
         user.setStep(UserStep.SAVE_CONTACT);
         userRepository.save(user);
-        return SendMessage.builder().text("Send me your contact").chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.SHARE_CONTACT)).build();
+        return SendMessage.builder().text(Message.START_MESSAGE).chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.SHARE_CONTACT)).build();
     }
 
     @Override
@@ -55,9 +56,9 @@ public class UserServiceImpl implements UserService {
             user.setStep(UserStep.ASK_FULL_NAME);
             userRepository.save(user);
 
-            return SendMessage.builder().chatId(user.getChatId()).text("send me your full name!").replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).build();
+            return SendMessage.builder().chatId(user.getChatId()).text(Message.FULL_NAME_MSG).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).build();
         } else {
-            return SendMessage.builder().text("Please, Send me your contact").chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.SHARE_CONTACT)).build();
+            return SendMessage.builder().text(Message.START_MESSAGE).chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.SHARE_CONTACT)).build();
         }
     }
 
@@ -69,9 +70,15 @@ public class UserServiceImpl implements UserService {
             user.setStep(UserStep.ASK_EMPLOYMENT_ACTIVITY);
             userRepository.save(user);
 
-            return SendMessage.builder().chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).text("What do you do for living?").build();
+            return SendMessage.builder().chatId(user.getChatId())
+                    .replyMarkup(buttonService.createButton(ButtonConst.EMPTY))
+                    .text(Message.EMPLOYMENT_ACTIVITY_MSG)
+                    .build();
         } else {
-            return SendMessage.builder().chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).text("please send me your full name").build();
+            return SendMessage.builder().chatId(user.getChatId())
+                    .replyMarkup(buttonService.createButton(ButtonConst.EMPTY))
+                    .text(Message.FULL_NAME_MSG)
+                    .build();
         }
     }
 
@@ -83,9 +90,13 @@ public class UserServiceImpl implements UserService {
             user.setStep(UserStep.ASK_EMPLOYEE_COUNT);
             userRepository.save(user);
 
-            return SendMessage.builder().chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).text("How many employees do you have").build();
+            return SendMessage.builder().chatId(user.getChatId())
+                    .replyMarkup(buttonService.createButton(ButtonConst.EMPTY))
+                    .text(Message.EMPLOYEE_COUNT).build();
         } else {
-            return SendMessage.builder().chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).text("please, Tell me \nWhat do you do for living?\n").build();
+            return SendMessage.builder().chatId(user.getChatId())
+                    .replyMarkup(buttonService.createButton(ButtonConst.EMPTY))
+                    .text(Message.EMPLOYMENT_ACTIVITY_MSG).build();
         }
     }
 
@@ -94,18 +105,27 @@ public class UserServiceImpl implements UserService {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String employeeCount = update.getMessage().getText();
             user.setNumberOfEmployees(employeeCount);
-
+            user.setDone(true);
             if (isSubscribed) {
                 user.setStep(UserStep.ASK_CARD_NUMBER);
                 userRepository.save(user);
-                return SendMessage.builder().chatId(user.getChatId()).text("Please Send me your card number").replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).build();
+                return SendMessage.builder().chatId(user.getChatId())
+                        .text(Message.CARD_NUMBER_MESSAGE)
+                        .replyMarkup(buttonService.createButton(ButtonConst.EMPTY))
+                        .build();
             } else {
                 user.setStep(UserStep.SHOW_CHANNEL);
                 userRepository.save(user);
-                return SendMessage.builder().chatId(user.getChatId()).text("join this channel").replyMarkup(buttonService.enterChannel(channelUsername)).build();
+                return SendMessage.builder().chatId(user.getChatId())
+                        .text(Message.JOIN_CHANNEL_MESSAGE)
+                        .replyMarkup(buttonService.enterChannel(channelUsername))
+                        .build();
             }
         } else {
-            return SendMessage.builder().chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).text("please, Tell me \nHow many employees do you have?\n").build();
+            return SendMessage.builder().chatId(user.getChatId())
+                    .replyMarkup(buttonService.createButton(ButtonConst.EMPTY))
+                    .text(Message.EMPLOYEE_COUNT)
+                    .build();
         }
     }
 
@@ -114,41 +134,57 @@ public class UserServiceImpl implements UserService {
         if (isSubscribed) {
             user.setStep(UserStep.ASK_CARD_NUMBER);
             userRepository.save(user);
-            return SendMessage.builder().chatId(user.getChatId()).text("Send me your card number").replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).build();
+            return SendMessage.builder().chatId(user.getChatId()).text(Message.CARD_NUMBER_MESSAGE).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).build();
         } else {
             user.setStep(UserStep.SHOW_CHANNEL);
             userRepository.save(user);
-            return SendMessage.builder().chatId(user.getChatId()).text("Please join this channel").replyMarkup(buttonService.enterChannel(channelUsername)).build();
+            return SendMessage.builder()
+                    .chatId(user.getChatId())
+                    .text(Message.JOIN_CHANNEL_MESSAGE)
+                    .replyMarkup(buttonService.enterChannel(channelUsername))
+                    .build();
         }
     }
 
     @Override
-    public SendMessage saveCardNumberAndNext(User user, Update update) {
+    public SendMessage saveCardNumberAndNext(User user, Update update, boolean subscribed, String channelUsername) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String cardNumber = update.getMessage().getText();
+            cardNumber = cardNumber.replace(" ", "");
             user.setCardNumber(cardNumber);
             user.setStep(UserStep.ASK_CARD_EXPIRY_DATE);
             userRepository.save(user);
 
-            return SendMessage.builder().chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).text("Send me your card's expire date").build();
+            return SendMessage.builder()
+                    .chatId(user.getChatId())
+                    .replyMarkup(buttonService.createButton(ButtonConst.EMPTY))
+                    .text(Message.CARD_EXPIRE_MSG).build();
         } else {
-            return SendMessage.builder().chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).text("please, Send me your card number").build();
+            return SendMessage.builder()
+                    .chatId(user.getChatId())
+                    .replyMarkup(buttonService.createButton(ButtonConst.EMPTY))
+                    .text(Message.CARD_NUMBER_MESSAGE).build();
         }
     }
 
     @Override
-    public SendMessage saveCardExpAndNext(User user, Update update) {
+    public SendMessage saveCardExpAndNext(User user, Update update, boolean subscribed, String channelUsername) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String cardExpire = update.getMessage().getText();
+            cardExpire = cardExpire.replace("/", "");
             String error;
             try {
-                CommonResponse<CardCreateResponse> commonResponse = billingService.getVerifyCode(new CardCreateRequest(user.getCardNumber(), user.getCardExp(), 9_000_00L, user.getChatId()));
+                CommonResponse<CardCreateResponse> commonResponse = billingService.getVerifyCode(new CardCreateRequest(user.getCardNumber(), cardExpire, 9_000_00L, user.getChatId()));
                 if (commonResponse.getSuccess()) {
                     user.setCardExp(cardExpire);
                     user.setStep(UserStep.ASK_VERIFICATION_CODE);
                     user.setTransactionId(commonResponse.getItem().getTransactionId());
                     userRepository.save(user);
-                    return SendMessage.builder().chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).text("we sent otp code to this number: " + commonResponse.getItem().getPhone() + "\nif you got verify it!").build();
+                    return SendMessage.builder()
+                            .chatId(user.getChatId())
+                            .replyMarkup(buttonService.createButton(ButtonConst.EMPTY))
+                            .text("Tasdiqlash kodi " + commonResponse.getItem().getPhone() + " ga yuborildi. Tasdiqlash kodini kiriting")
+                            .build();
                 }
                 error = commonResponse.getMessage();
             } catch (Exception e) {
@@ -157,9 +193,12 @@ public class UserServiceImpl implements UserService {
 
             user.setStep(UserStep.ASK_CARD_NUMBER);
             userRepository.save(user);
-            return SendMessage.builder().chatId(user.getChatId()).text(error + "\n\nPlease: Send me your card number").replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).build();
+            return SendMessage.builder().chatId(user.getChatId()).text(error + "\n\n" + Message.CARD_NUMBER_MESSAGE).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).build();
         } else {
-            return SendMessage.builder().chatId(user.getChatId()).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).text("please, Send me your card number").build();
+            return SendMessage.builder()
+                    .chatId(user.getChatId())
+                    .replyMarkup(buttonService.createButton(ButtonConst.EMPTY))
+                    .text(Message.CARD_NUMBER_MESSAGE).build();
         }
     }
 
@@ -174,7 +213,10 @@ public class UserServiceImpl implements UserService {
                     user.setPremium(Boolean.TRUE);
                     user.setStep(UserStep.PREMIUM);
                     userRepository.save(user);
-                    return SendMessage.builder().chatId(user.getChatId()).text("Successfully paid, you will send gift file").replyMarkup(buttonService.createButton(ButtonConst.GET_FILE)).build();
+                    return SendMessage.builder().chatId(user.getChatId())
+                            .text("Successfully paid, you will send gift file")
+                            .replyMarkup(buttonService.createButton(ButtonConst.GET_FILE))
+                            .build();
                 }
                 error = commonResponse.getMessage();
             } catch (Exception e) {
@@ -183,13 +225,13 @@ public class UserServiceImpl implements UserService {
         }
         user.setStep(UserStep.ASK_CARD_NUMBER);
         userRepository.save(user);
-        return SendMessage.builder().chatId(user.getChatId()).text(error + "\n\nSend me your card number").replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).build();
+        return SendMessage.builder().chatId(user.getChatId()).text(error + "\n\n" + Message.CARD_NUMBER_MESSAGE).replyMarkup(buttonService.createButton(ButtonConst.EMPTY)).build();
     }
 
     @Override
     public SendDocument sendGiftFile(User user, Update update) {
         return SendDocument.builder()
-                .caption("Your gift is here")
+                .caption("GAYD")
                 .chatId(user.getChatId())
                 .document(new InputFile(FILE_ID))
                 .build();

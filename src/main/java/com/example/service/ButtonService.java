@@ -56,8 +56,16 @@ public class ButtonService {
         channel.setUrl("t.me/" + channelUsername.replace("@", ""));
 //        channel.setCallbackData("chooseLanguage-uzb");
         navigationRow.add(channel);
-
         rowsInline.add(navigationRow);
+
+        InlineKeyboardButton check = new InlineKeyboardButton();
+        check.setText("Obuna bo'ldim ✅");
+//        check.setUrl("t.me/" + channelUsername.replace("@", ""));
+        check.setCallbackData("check_me");
+        navigationRow = new ArrayList<>();
+        navigationRow.add(check);
+        rowsInline.add(navigationRow);
+
         markupInline.setKeyboard(rowsInline);
         return markupInline;
     }

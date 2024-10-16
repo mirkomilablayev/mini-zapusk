@@ -7,4 +7,5 @@ public interface ButtonConst {
     String NEXT = "Keyingi ➡️";
     String EMPTY = "EMPTY";
     String GET_FILE = "Faylni olish ⬇️";
+
 }

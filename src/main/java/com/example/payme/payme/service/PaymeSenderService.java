@@ -32,6 +32,7 @@ public class PaymeSenderService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Cache-Control", "no-cache");
         headers.set("Accept-Language", "uz");
+        System.out.println(request);
         try {
             System.out.println(new ObjectMapper().writeValueAsString(headers));
         } catch (JsonProcessingException e) {

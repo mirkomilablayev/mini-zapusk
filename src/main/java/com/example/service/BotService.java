@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.configuration.BotConfiguration;
 import com.example.dto.FileDto;
 import com.example.entity.User;
+import com.example.service.impl.AdminServiceImpl;
 import com.example.util.ButtonConst;
 import com.example.util.ContentType;
 import com.example.util.UserStep;
@@ -11,14 +12,12 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
+import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.*;
 
-import java.io.Serializable;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Component
@@ -28,6 +27,7 @@ public class BotService extends TelegramLongPollingBot {
 
     private final BotConfiguration botConfiguration;
     private final UserService userService;
+    private final AdminService adminService;
 
 
     private static final String FILE_ID = "BQACAgIAAxkBAAIBOmcKfNuZSAqORoUdSqtf4guZL_JsAALcXAACPKpISGzRs0Ung6Y5NgQ";
@@ -55,17 +55,40 @@ public class BotService extends TelegramLongPollingBot {
         } else if (!user.getAdmin()) {
             handleUserStep(update, user);
         } else {
-            handleAdminStep();
+            handleAdminStep(update, user);
         }
     }
 
-    private void handleAdminStep(Update update, User user) {
+    private void handleAdminStep(Update update, User user) throws Exception {
+        if (update.hasMessage()) {
+            Message message = update.getMessage();
+            if (message.hasText()) {
+                String text = message.getText();
+//                if (ButtonConst.)
+            }
+        }
         if (UserStep.ADMIN_MAIN_MENU.equals(user.getStep())) {
-
+            SendMessage sendMessage = adminService.adminMainMenu(user, update);
+            execute(sendMessage);
         }
     }
 
     public void handleUserStep(Update update, User user) throws Exception {
+        boolean subscribed = userService.isSubscribed(botConfiguration.getChannelUsername(), getBotToken(), user.getChatId());
+
+        if (update.hasCallbackQuery()) {
+            String data = update.getCallbackQuery().getData();
+            if ("check_me".equals(data) ) {
+                SendMessage sendMessage = userService.showChannelAndNext(user, update, botConfiguration.getChannelUsername(), subscribed);
+                execute(sendMessage);
+            }
+            return;
+        }
+        if (!subscribed && user.getDone()) {
+            SendMessage sendMessage = userService.showChannelAndNext(user, update, botConfiguration.getChannelUsername(), false);
+            execute(sendMessage);
+            return;
+        }
         if (UserStep.DEFAULT.equals(user.getStep())) {
             SendMessage sendMessage = userService.askContact(user);
             execute(sendMessage);
@@ -79,16 +102,16 @@ public class BotService extends TelegramLongPollingBot {
             SendMessage sendMessage = userService.saveEmploymentActivityAndNext(user, update);
             execute(sendMessage);
         } else if (UserStep.ASK_EMPLOYEE_COUNT.equals(user.getStep())) {
-            SendMessage sendMessage = userService.saveEmployeeCountAndNext(user, update, userService.isSubscribed(botConfiguration.getChannelUsername(), getBotToken(), user.getChatId()), botConfiguration.getChannelUsername());
+            SendMessage sendMessage = userService.saveEmployeeCountAndNext(user, update, subscribed, botConfiguration.getChannelUsername());
             execute(sendMessage);
         } else if (UserStep.SHOW_CHANNEL.equals(user.getStep())) {
-            SendMessage sendMessage = userService.showChannelAndNext(user, update, botConfiguration.getChannelUsername(), userService.isSubscribed(botConfiguration.getChannelUsername(), getBotToken(), user.getChatId()));
+            SendMessage sendMessage = userService.showChannelAndNext(user, update, botConfiguration.getChannelUsername(), subscribed);
             execute(sendMessage);
         } else if (UserStep.ASK_CARD_NUMBER.equals(user.getStep())) {
-            SendMessage sendMessage = userService.saveCardNumberAndNext(user, update);
+            SendMessage sendMessage = userService.saveCardNumberAndNext(user, update, subscribed, botConfiguration.getChannelUsername());
             execute(sendMessage);
         } else if (UserStep.ASK_CARD_EXPIRY_DATE.equals(user.getStep())) {
-            SendMessage sendMessage = userService.saveCardExpAndNext(user, update);
+            SendMessage sendMessage = userService.saveCardExpAndNext(user, update, subscribed, botConfiguration.getChannelUsername());
             execute(sendMessage);
         } else if (UserStep.ASK_VERIFICATION_CODE.equals(user.getStep())) {
             SendMessage sendMessage = userService.payAndNext(user, update);

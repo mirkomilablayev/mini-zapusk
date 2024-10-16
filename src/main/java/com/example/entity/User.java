@@ -23,7 +23,6 @@ public class User {
     private String employmentActivity;
     private String numberOfEmployees;
     private String chatId;
-    private String step;
 
     private String cardNumber;
     private String cardExp;
@@ -32,4 +31,6 @@ public class User {
     private Boolean admin = false;
     private Boolean premium = false;
 
+    private String step;
+    private Boolean done = false;
 }
