@@ -10,6 +10,7 @@ import com.example.util.UserStep;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
@@ -148,5 +149,13 @@ public class BotService extends TelegramLongPollingBot {
         }
         return new FileDto(ContentType.NONE);
     }
+
+
+    @Scheduled(initialDelay = 12 * 60 * 60 * 1000, fixedRate = 12 * 60 * 60 * 1000) // Initial delay and every 12 hours in milliseconds
+    public void pushNotification() {
+        System.out.println("Function executed at: " + System.currentTimeMillis());
+    }
+
+
 
 }

@@ -1,62 +1,682 @@
-{
-  "success": true,
-  "data": [
-    {
-      "id": 11,
-      "loanInformationCenterId": 149,
-      "requestId": 13213,
-      "requestDate": "13.09.2024",
-      "pinfl": "60706038660048",
-      "passportNumber": "AC2298785",
-      "fullName": "SAFIYEVA SAODAT BEXZOD QIZI",
-      "birthDate": "07.06.2003",
-      "gender": 2,
-      "phoneNumber": "998200051566",
-      "region": "Toshkent shahri",
-      "district": "Yashnobod tumani",
-      "addressCurrent": "ChO‘LPON MFY, FARG‘ONA YO‘LI KO‘ChASI,  uy:7 \"A\" xonadon:39",
-      "eduCourseId": 4,
-      "universityName": "Toshkent Xalqaro Vestminster Universiteti",
-      "bankBranchCode": "000416",
-      "bankBranchName": "Асака банк Тошкент шаҳар филиали",
-      "singleRegister": false,
-      "creditSum": 36292800,
-      "statusId": 4,
-      "statusName": "QABUL QILINDI",
-      "pinflGuar": "40612820500080",
-      "wingsRequestId": "rs_13213guar_01_967",
-      "wingsRequestStep": "01",
-      "wingsRequestStatus": "4",
-      "wingsRequestStatusDescription": "Skoringdan o'tildi.",
-      "wingsRequestProductId": 4662,
-      "updateDataRequest": "{\"id\":13213,\"status_code\":4,\"comment\":\"У клиента  есть задолженность в МИБ. PNFL:40612820500080\"}",
-      "educationInfo": {
-        "id_otm": "421211102318",
-        "education_year": "2024",
-        "university_code": "421",
-        "university_name": "Toshkent Xalqaro Vestminster Universiteti",
-        "university_type_code": "12",
-        "university_type_name": "Universitet",
-        "university_ownership_code": "13",
-        "university_ownership_name": "Xorijiy",
-        "education_type_code": "11",
-        "education_type_name": "Bakalavr",
-        "education_form_name": "Kunduzgi",
-        "speciality_code": "60610200",
-        "speciality_name": "Axborot tizimlari va texnologiyalari (tarmoqlar va sohalar bo‘yicha)",
-        "faculty_code": "421-101",
-        "faculty_name": "Huquq, texnologiya va ta'lim",
-        "payment_type_code": "12",
-        "payment_type_name": "To‘lov-shartnoma",
-        "course": "4-kurs",
-        "gpa": 3.0,
-        "pdf_link": "https://billing.e-edu.uz/api/public/download/contract-iFbYW2qc.pdf"
-      },
-      "dcreated": "13.09.2024 15:53:34",
-      "dmodified": "13.09.2024 16:45:49",
-      "bycreated": "system",
-      "bymodified": "system"
-    }
-  ],
-  "count": 1
-}
+[
+  {
+    "code": "0",
+    "name": ""
+  },
+  {
+    "code": "Artemis Gray",
+    "name": "Artemis Gray"
+  },
+  {
+    "code": "Smoke Beige",
+    "name": "Smoke Beige"
+  },
+  {
+    "code": "Summit White",
+    "name": "Summit White"
+  },
+  {
+    "code": "Blue",
+    "name": "Blue"
+  },
+  {
+    "code": "Swichblade Silver",
+    "name": "Swichblade Silver"
+  },
+  {
+    "code": "Misty Lake",
+    "name": "Misty Lake"
+  },
+  {
+    "code": "Red-E or Not",
+    "name": "Red-E or Not"
+  },
+  {
+    "code": "Burnt Coconut",
+    "name": "Burnt Coconut"
+  },
+  {
+    "code": "Black Met.Kettle metallic",
+    "name": "Black Met.Kettle metallic"
+  },
+  {
+    "code": "Son of a gun gray",
+    "name": "Son of a gun gray"
+  },
+  {
+    "code": "Light blue",
+    "name": "Light blue"
+  },
+  {
+    "code": "Satin Steel Gray Met",
+    "name": "Satin Steel Gray Met"
+  },
+  {
+    "code": "Pow Zinga Met",
+    "name": "Pow Zinga Met"
+  },
+  {
+    "code": "Darmoon Blue Met",
+    "name": "Darmoon Blue Met"
+  },
+  {
+    "code": "Satin Steel Gray Met-2",
+    "name": "Satin Steel Gray Met-2"
+  },
+  {
+    "code": "Agate Red Metallic",
+    "name": "Agate Red Metallic"
+  },
+  {
+    "code": "Mosaic Black Metallic",
+    "name": "Mosaic Black Metallic"
+  },
+  {
+    "code": "Coppertino-3",
+    "name": "Coppertino-3"
+  },
+  {
+    "code": "Velvet Red Met",
+    "name": "Velvet Red Met"
+  },
+  {
+    "code": "Abalone White Pearl",
+    "name": "Abalone White Pearl"
+  },
+  {
+    "code": "Black-Matt",
+    "name": "Black-Matt"
+  },
+  {
+    "code": "Iridescent Pearl Tricoat",
+    "name": "Iridescent Pearl Tricoat"
+  },
+  {
+    "code": "Shadow Gray Metallic",
+    "name": "Shadow Gray Metallic"
+  },
+  {
+    "code": "Blue Me Away Metalic",
+    "name": "Blue Me Away Metalic"
+  },
+  {
+    "code": "Oxford Metalic",
+    "name": "Oxford Metalic"
+  },
+  {
+    "code": "Dark Shadow Metallic",
+    "name": "Dark Shadow Metallic"
+  },
+  {
+    "code": "Satin Steel Metalic",
+    "name": "Satin Steel Metalic"
+  },
+  {
+    "code": "Graphite Metallic",
+    "name": "Graphite Metallic"
+  },
+  {
+    "code": "The drake met-2",
+    "name": "The drake met-2"
+  },
+  {
+    "code": "The drake met-2",
+    "name": "The drake met-2"
+  },
+  {
+    "code": "Rowan metallic",
+    "name": "Rowan metallic"
+  },
+  {
+    "code": "Clear white (UD)",
+    "name": "Clear white (UD)"
+  },
+  {
+    "code": "Snow White",
+    "name": "Snow White"
+  },
+  {
+    "code": "Snow White Pearl (SWP)",
+    "name": "Snow White Pearl (SWP)"
+  },
+  {
+    "code": "Snow White Pearl (SWP) метталик",
+    "name": "Snow White Pearl (SWP) метталик"
+  },
+  {
+    "code": "Yacht Blue (DU3) метталик",
+    "name": "Yacht Blue (DU3) метталик"
+  },
+  {
+    "code": "Interstellar Gray (AGT) метталик",
+    "name": "Interstellar Gray (AGT) метталик"
+  },
+  {
+    "code": "Silky Silver (4SS) метталик",
+    "name": "Silky Silver (4SS) метталик"
+  },
+  {
+    "code": "Gravity Blue (B4U) метталик",
+    "name": "Gravity Blue (B4U) метталик"
+  },
+  {
+    "code": "Aurora Black Pearl (ABP) метталик",
+    "name": "Aurora Black Pearl (ABP) метталик"
+  },
+  {
+    "code": "Steel Gray (KLG) метталик",
+    "name": "Steel Gray (KLG) метталик"
+  },
+  {
+    "code": "Starbright Yellow (B4Y) метталик",
+    "name": "Starbright Yellow (B4Y) метталик"
+  },
+  {
+    "code": "Neptune Blue (B3A) метталик",
+    "name": "Neptune Blue (B3A) метталик"
+  },
+  {
+    "code": "Mars Orange (M3R) метталик",
+    "name": "Mars Orange (M3R) метталик"
+  },
+  {
+    "code": "Dark Ocean Blue (BU3) метталик",
+    "name": "Dark Ocean Blue (BU3) метталик"
+  },
+  {
+    "code": "Cherry Black (9H) метталик",
+    "name": "Cherry Black (9H) метталик"
+  },
+  {
+    "code": "Starbright Yellow/Clear White (GA6) метталик",
+    "name": "Starbright Yellow/Clear White (GA6) метталик"
+  },
+  {
+    "code": "Starbright Yellow/Cherry Black (GA7)",
+    "name": "Starbright Yellow/Cherry Black (GA7)"
+  },
+  {
+    "code": "Gravity Gray/Platinum Gold (SE1) метталик",
+    "name": "Gravity Gray/Platinum Gold (SE1) метталик"
+  },
+  {
+    "code": "Dark Ocean Blue/Clear White (GA4)",
+    "name": "Dark Ocean Blue/Clear White (GA4)"
+  },
+  {
+    "code": "Dark Ocean Blue/Cherry Black (GA5) метталик",
+    "name": "Dark Ocean Blue/Cherry Black (GA5) метталик"
+  },
+  {
+    "code": "Mars Orange/Clear White (GA3)",
+    "name": "Mars Orange/Clear White (GA3)"
+  },
+  {
+    "code": "Essence Brown (BE2)",
+    "name": "Essence Brown (BE2)"
+  },
+  {
+    "code": "Minerl Blue (M4B)",
+    "name": "Minerl Blue (M4B)"
+  },
+  {
+    "code": "Steel Gray (KLG)",
+    "name": "Steel Gray (KLG)"
+  },
+  {
+    "code": "Silky Silver (4SS)",
+    "name": "Silky Silver (4SS)"
+  },
+  {
+    "code": "Runway Red (CR5)",
+    "name": "Runway Red (CR5)"
+  },
+  {
+    "code": "Gravity Blue (B4U)",
+    "name": "Gravity Blue (B4U)"
+  },
+  {
+    "code": "Platinum Graphite (ABT)",
+    "name": "Platinum Graphite (ABT)"
+  },
+  {
+    "code": "Aurora Black Pearl (ABP) метталик",
+    "name": "Aurora Black Pearl (ABP) метталик"
+  },
+  {
+    "code": "Cherry Black (9H)",
+    "name": "Cherry Black (9H)"
+  },
+  {
+    "code": "Platinum Gold (G3Y)",
+    "name": "Platinum Gold (G3Y)"
+  },
+  {
+    "code": "Glittering Metal (K3G)",
+    "name": "Glittering Metal (K3G)"
+  },
+  {
+    "code": "Gravity Gray (KDT)",
+    "name": "Gravity Gray (KDT)"
+  },
+  {
+    "code": "Neptune Blue (B4R)",
+    "name": "Neptune Blue (B4R)"
+  },
+  {
+    "code": "Mars Orange (M3R)",
+    "name": "Mars Orange (M3R)"
+  },
+  {
+    "code": "RSparkling Silver (KCS)",
+    "name": "Sparkling Silver (KCS)"
+  },
+  {
+    "code": "Candy White",
+    "name": "Candy White"
+  },
+  {
+    "code": "Reflex Silver",
+    "name": "Reflex Silver"
+  },
+  {
+    "code": "Deep Black",
+    "name": "Deep Black"
+  },
+  {
+    "code": "Indium Grey",
+    "name": "Indium Grey"
+  },
+  {
+    "code": "Candy/pure white/Белый",
+    "name": "Candy/pure white/Белый"
+  },
+  {
+    "code": "Platinum grey /Cерый, металлик",
+    "name": "Platinum grey /Cерый, металлик"
+  },
+  {
+    "code": "Cappuccino beige/Бежевый, металлик",
+    "name": "Cappuccino beige/Бежевый, металлик"
+  },
+  {
+    "code": "Magic black/ Черный, металлик",
+    "name": "Magic black/ Черный, металлик"
+  },
+  {
+    "code": "Brilliant silver/Cеребристый металлик",
+    "name": "Brilliant silver/Cеребристый металлик"
+  },
+  {
+    "code": "Reef blue/Синий, металлик",
+    "name": "Reef blue/Синий, металлик"
+  },
+  {
+    "code": "Magnetic brown/Коричневый, металлик",
+    "name": "Magnetic brown/Коричневый, металлик"
+  },
+  {
+    "code": "Emerald green/Зеленый, металлик",
+    "name": "Emerald green/Зеленый, металлик"
+  },
+  {
+    "code": "Moon white/Белый, металлик",
+    "name": "Moon white/Белый, металлик"
+  },
+  {
+    "code": "Steel grey/Серый",
+    "name": "Steel grey/Серый"
+  },
+  {
+    "code": "Business grey/ Серый, металлик",
+    "name": "Business grey/ Серый, металлик"
+  },
+  {
+    "code": "Energy blue/Синий",
+    "name": "Energy blue/Синий"
+  },
+  {
+    "code": "Velvet red/Красный, металлик",
+    "name": "Velvet red/Красный, металлик"
+  },
+  {
+    "code": "Quartz grey/Серый, металлик",
+    "name": "Quartz grey/Серый, металлик"
+  },
+  {
+    "code": "Lava blue/Синий, металлик",
+    "name": "Lava blue/Синий, металлик"
+  },
+  {
+    "code": "Ледниковый (221) Белый",
+    "name": "Ледниковый (221) Белый"
+  },
+  {
+    "code": "Черная жемчужина (676) Черный",
+    "name": "Черная жемчужина (676) Черный"
+  },
+  {
+    "code": "Серый Базальт (242) Серо бежевый",
+    "name": "Серый Базальт (242) Серо бежевый"
+  },
+  {
+    "code": "Серое плато (624)",
+    "name": "Серое плато (624)"
+  },
+  {
+    "code": "Янтарь (248) Золотисто охристый",
+    "name": "Янтарь (248) Золотисто охристый"
+  },
+  {
+    "code": "Красный сплав (136) Красный",
+    "name": "Красный сплав (136) Красный"
+  },
+  {
+    "code": "Платина (691) Серебристый",
+    "name": "Платина (691) Серебристый"
+  },
+  {
+    "code": "Маэстро (653) Черный",
+    "name": "Маэстро (653) Черный"
+  },
+  {
+    "code": "Фантом (496) Хамелеон",
+    "name": "Фантом (496) Хамелеон"
+  },
+  {
+    "code": "Ангкор (246) Коричневый",
+    "name": "Ангкор (246) Коричневый"
+  },
+  {
+    "code": "Сердолик (195) Красный",
+    "name": "Сердолик (195) Красный"
+  },
+  {
+    "code": "Серо-бежевый Каракумы (238) металлик",
+    "name": "Серо-бежевый Каракумы (238) металлик"
+  },
+  {
+    "code": "Коричневый Брюн (250) металлик",
+    "name": "Коричневый Брюн (250) металлик"
+  },
+  {
+    "code": "Серебристый темно-синий Лазурно-синий (498) металлик",
+    "name": "Серебристый темно-синий Лазурно-синий (498) металлик"
+  },
+  {
+    "code": "Fusion Black",
+    "name": "Fusion Black"
+  },
+  {
+    "code": "Seeker Met-3",
+    "name": "Seeker Met-3"
+  },
+  {
+    "code": "Seeker Met-2",
+    "name": "Seeker Met-2"
+  },
+  {
+    "code": "Satin Steel Gray Met-2",
+    "name": "Satin Steel Gray Met-2"
+  },
+  {
+    "code": "Jinx Met-2",
+    "name": "Jinx Met-2"
+  },
+  {
+    "code": "Brunt Coconut",
+    "name": "Brunt Coconut"
+  },
+  {
+    "code": "Kasmir Met-3",
+    "name": "Kasmir Met-3"
+  },
+  {
+    "code": "Darkmoon Blue Met",
+    "name": "Darkmoon Blue Met"
+  },
+  {
+    "code": "Khaki White",
+    "name": "Khaki White"
+  },
+  {
+    "code": "Black",
+    "name": "Black"
+  },
+  {
+    "code": "Grey",
+    "name": "Grey"
+  },
+  {
+    "code": "Roland purple",
+    "name": "Roland purple"
+  },
+  {
+    "code": "Серебристый",
+    "name": "Серебристый"
+  },
+  {
+    "code": "Red",
+    "name": "Red"
+  },
+  {
+    "code": "White/Cherry black",
+    "name": "White/Cherry black"
+  },
+  {
+    "code": "Jungle Wood Green",
+    "name": "Jungle Wood Green"
+  },
+  {
+    "code": "Clear white / Fusion black",
+    "name": "Clear white / Fusion black"
+  },
+  {
+    "code": "Black Pearl",
+    "name": "Black Pearl"
+  },
+  {
+    "code": "Plueton Blue",
+    "name": "Plueton Blue"
+  },
+  {
+    "code": "Shadow Matte Gray",
+    "name": "Shadow Matte Gray"
+  },
+  {
+    "code": "Pure Beige",
+    "name": "Pure Beige"
+  },
+  {
+    "code": "Deep Blue",
+    "name": "Deep Blue"
+  },
+  {
+    "code": "Moonscape",
+    "name": "Moonscape"
+  },
+  {
+    "code": "Havana Gray",
+    "name": "Havana Gray"
+  },
+  {
+    "code": "GK2",
+    "name": "GK2"
+  },
+  {
+    "code": "Some Kinda Blue",
+    "name": "Some Kinda Blue"
+  },
+  {
+    "code": "May Green",
+    "name": "May Green"
+  },
+  {
+    "code": "Some Kinda Blue Met",
+    "name": "Some Kinda Blue Met"
+  },
+  {
+    "code": "Darkmoon Blue Met",
+    "name": "Darkmoon Blue Met"
+  },
+  {
+    "code": "Primary Color",
+    "name": "Primary Color"
+  },
+  {
+    "code": "Zeus",
+    "name": "Zeus"
+  },
+  {
+    "code": "White",
+    "name": "White"
+  },
+  {
+    "code": "Gold",
+    "name": "Gold"
+  },
+  {
+    "code": "Белый-серый",
+    "name": "Белый-серый"
+  },
+  {
+    "code": "Downing Red",
+    "name": "Downing Red"
+  },
+  {
+    "code": "Valais Green",
+    "name": "Valais Green"
+  },
+  {
+    "code": "Delan Black",
+    "name": "Delan Black"
+  },
+  {
+    "code": "ASCOT GREEN (Темно-зеленый)",
+    "name": "ASCOT GREEN (Темно-зеленый)"
+  },
+  {
+    "code": "CL (New Carbon Crystal Black)",
+    "name": "CL (New Carbon Crystal Black)"
+  },
+  {
+    "code": "Molochniy",
+    "name": "Molochniy"
+  },
+  {
+    "code": "Marine Blue",
+    "name": "Marine Blue"
+  },
+  {
+    "code": "Cityscape Green",
+    "name": "Cityscape Green"
+  },
+  {
+    "code": "Mangangrau",
+    "name": "Mangangrau"
+  },
+  {
+    "code": "Red/Cherry black",
+    "name": "Red/Cherry black"
+  },
+  {
+    "code": "Polar White",
+    "name": "Polar White"
+  },
+  {
+    "code": "Imperial Blue",
+    "name": "Imperial Blue"
+  },
+  {
+    "code": "Glacier white pearl",
+    "name": "Glacier white pearl"
+  },
+  {
+    "code": "Pluton Blue",
+    "name": "Pluton Blue"
+  },
+  {
+    "code": "Steel Gray",
+    "name": "Steel Gray"
+  },
+  {
+    "code": "Neptune Blue",
+    "name": "Neptune Blue"
+  },
+  {
+    "code": "Mars Orange",
+    "name": "Mars Orange"
+  },
+  {
+    "code": "Dark Ocean Blue",
+    "name": "Dark Ocean Blue"
+  },
+  {
+    "code": "Gravity Gray",
+    "name": "Gravity Gray"
+  },
+  {
+    "code": "Pluton Blue / Fusion Black",
+    "name": "Pluton Blue / Fusion Black"
+  },
+  {
+    "code": "Pluton Blue / Clear Whiye",
+    "name": "Pluton Blue / Clear Whiye"
+  },
+  {
+    "code": "Dark Ocean Blue / Fusion Black",
+    "name": "Dark Ocean Blue / Fusion Black"
+  },
+  {
+    "code": "Dark Ocean Blue / Clear White",
+    "name": "Dark Ocean Blue / Clear White"
+  },
+  {
+    "code": "Volcanic Sand Brown",
+    "name": "Volcanic Sand Brown"
+  },
+  {
+    "code": "Intence Red",
+    "name": "Intence Red"
+  },
+  {
+    "code": "Тёмно-Синий",
+    "name": "Тёмно-Синий"
+  },
+  {
+    "code": "Orange (Оранжевый)",
+    "name": "Orange (Оранжевый)"
+  },
+  {
+    "code": "White(Blue/Grey)",
+    "name": "White(Blue/Grey)"
+  },
+  {
+    "code": "Серый (Light Ayers Grey)",
+    "name": "Серый (Light Ayers Grey)"
+  },
+  {
+    "code": "GZ8",
+    "name": "GZ8"
+  },
+  {
+    "code": "Hamilton white (белый)",
+    "name": "Hamilton white (белый)"
+  },
+  {
+    "code": "Sun Black (чeрный)",
+    "name": "Sun Black (чeрный)"
+  },
+  {
+    "code": "Horizon Blue (синий)",
+    "name": "Horizon Blue (синий)"
+  },
+  {
+    "code": "Grey (темно серый)",
+    "name": "Grey (темно серый)"
+  },
+  {
+    "code": "Simple white (Белый)",
+    "name": "Simple white (Белый)"
+  }
+]
