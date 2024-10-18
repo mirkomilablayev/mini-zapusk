@@ -19,17 +19,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fullName;
+    private Boolean hasFullName = Boolean.FALSE;
     private String phoneNumber;
+    private Boolean hasPhoneNumber = Boolean.FALSE;
     private String employmentActivity;
+    private Boolean hasEmploymentActivity = Boolean.FALSE;
     private String numberOfEmployees;
+    private Boolean hasNumberOfEmployees = Boolean.FALSE;
+    private Boolean firstPart = Boolean.FALSE;
+    private Boolean premium = false;
+
     private String chatId;
 
+    private LocalDateTime paymentProcessTime;
     private String cardNumber;
     private String cardExp;
     private Long transactionId;
-
-    private Boolean admin = false;
-    private Boolean premium = false;
 
     private String step;
     private Boolean done = false;
