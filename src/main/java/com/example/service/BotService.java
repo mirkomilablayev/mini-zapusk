@@ -4,13 +4,10 @@ import com.example.configuration.BotConfiguration;
 import com.example.dto.FileDto;
 import com.example.entity.User;
 import com.example.entity.UserRepository;
-import com.example.payme.controller.BillingService;
-import com.example.payme.dto.CommonResponse;
-import com.example.payme.dto.billing.CardCreateRequest;
-import com.example.payme.dto.billing.CardCreateResponse;
-import com.example.payme.dto.billing.VerifyRequest;
-import com.example.payme.dto.billing.VerifyResponse;
-import com.example.util.*;
+import com.example.util.ButtonConst;
+import com.example.util.ContentType;
+import com.example.util.MessageConst;
+import com.example.util.Steps;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +18,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.*;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -34,8 +30,6 @@ public class BotService extends TelegramLongPollingBot {
     private final BotConfiguration botConfiguration;
     private final UserService userService;
     private final ButtonService buttonService;
-    private final BillingService billingService;
-    //    private final AdminService adminService;
     private final UserRepository userRepository;
 
 
@@ -158,7 +152,6 @@ public class BotService extends TelegramLongPollingBot {
                 } else {
                     user.setNumberOfEmployees(text);
                     user.setHasNumberOfEmployees(true);
-                    user.setFirstPart(Boolean.TRUE);
                     user.setStep(Steps.EMPLOYEE_COUNT);
                     userRepository.save(user);
                 }
@@ -177,132 +170,14 @@ public class BotService extends TelegramLongPollingBot {
             return;
         }
 
-        if (!user.getPremium()) {
-            if (user.getPaymentProcessTime() == null || Duration.between(user.getPaymentProcessTime(), LocalDateTime.now()).toMinutes() > 5) {
-                sendMessage.setText(MessageConst.PAYMENT_MESSAGE);
-                sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-                execute(sendMessage);
-
-                sendMessage.setText(MessageConst.CARD_NUMBER_MESSAGE);
-                sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-                execute(sendMessage);
-
-                user.setPaymentProcessTime(LocalDateTime.now());
-                user.setStep(Steps.ASK_CARD_NUMBER);
-                userRepository.save(user);
-                return;
-            }
-
-            if (Steps.ASK_CARD_NUMBER.equals(user.getStep())) {
-                text = text.replace(" ", "");
-                if ("error_text".equals(text) || text.length() != 16) {
-                    sendMessage.setText(MessageConst.CARD_NUMBER_MESSAGE);
-                } else {
-                    user.setCardNumber(text);
-                    user.setStep(Steps.ASK_CARD_EXPIRE);
-                    userRepository.save(user);
-                    sendMessage.setText(MessageConst.CARD_EXPIRE_MSG);
-                }
-                sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-                execute(sendMessage);
-                return;
-            }
-
-            if (Steps.ASK_CARD_EXPIRE.equals(user.getStep())) {
-                text = text.replace(" ", "").replace("/", "");
-                if ("error_text".equals(text) || text.length() != 4) {
-                    sendMessage.setText(MessageConst.CARD_EXPIRE_MSG);
-                    sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-                    execute(sendMessage);
-                } else {
-                    try {
-                        CommonResponse<CardCreateResponse> commonResponse = billingService.getVerifyCode(new CardCreateRequest(user.getCardNumber(), text, 900000L, user.getChatId()));
-                        if (commonResponse.getSuccess()) {
-                            user.setCardNumber(text);
-                            user.setStep(Steps.ASK_VERIFY_CODE);
-                            user.setTransactionId(commonResponse.getItem().getTransactionId());
-                            userRepository.save(user);
-                            sendMessage.setText("Tastiqlash kodini kiriting!\nKod " + commonResponse.getItem().getPhone() + " ga yuborildi!");
-                            sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-                            execute(sendMessage);
-                        } else {
-                            sendMessage.setText(commonResponse.getMessage());
-                            execute(sendMessage);
-                            sendMessage.setText(MessageConst.CARD_NUMBER_MESSAGE);
-                            execute(sendMessage);
-                            user.setPaymentProcessTime(null);
-                            userRepository.save(user);
-                        }
-                    } catch (Exception e) {
-                        sendMessage.setText(e.getMessage());
-                        execute(sendMessage);
-                        sendMessage.setText(MessageConst.CARD_NUMBER_MESSAGE);
-                        execute(sendMessage);
-                        user.setPaymentProcessTime(null);
-                        userRepository.save(user);
-                    }
-                }
-                return;
-            }
-
-            if (Steps.ASK_VERIFY_CODE.equals(user.getStep())) {
-                text = text.replace(" ", "");
-                if ("error_text".equals(text) || text.length() != 6) {
-                    sendMessage.setText("Iltimos tastiqlash kodini to'g'ri kiriting!");
-                    sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-                    execute(sendMessage);
-                } else {
-                    try {
-                        CommonResponse<VerifyResponse> commonResponse = billingService.verify(new VerifyRequest(text, user.getTransactionId()));
-                        if (commonResponse.getSuccess()) {
-                            user.setCardNumber(null);
-                            user.setPaymentProcessTime(null);
-                            user.setCardExp(null);
-                            user.setTransactionId(null);
-                            user.setPremium(true);
-                            userRepository.save(user);
-                            sendMessage.setText("To'lov muvaffaqiyatli amalga oshirildi ✅");
-                            sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.GET_FILE));
-                            execute(sendMessage);
-                        } else {
-                            sendMessage.setText(commonResponse.getMessage());
-                            execute(sendMessage);
-                            sendMessage.setText(MessageConst.CARD_NUMBER_MESSAGE);
-                            execute(sendMessage);
-                            user.setPaymentProcessTime(null);
-                            userRepository.save(user);
-                        }
-                    } catch (Exception e) {
-                        sendMessage.setText(e.getMessage());
-                        execute(sendMessage);
-                        sendMessage.setText(MessageConst.PAYMENT_MESSAGE);
-                        execute(sendMessage);
-                        user.setPaymentProcessTime(null);
-                        userRepository.save(user);
-                    }
-                }
-                return;
-            }
-
-            if (ButtonConst.GET_FILE.equals(text) && user.getPremium()) {
-                SendDocument sendDocument = new SendDocument();
-                sendDocument.setChatId(user.getChatId());
-                sendDocument.setDocument(new InputFile(FILE_ID));
-                execute(sendDocument);
-            } else {
-                sendMessage.setText("Noto'g'ri buyruq kiritildi \uD83D\uDE33");
-                sendMessage.setReplyMarkup(buttonService.createButton(user.getPremium() ? ButtonConst.GET_FILE : ButtonConst.EMPTY));
-                execute(sendMessage);
-            }
-        }
-        if (ButtonConst.GET_FILE.equals(text) && user.getPremium()) {
+        if (ButtonConst.GET_FILE.equals(text)) {
             SendDocument sendDocument = new SendDocument();
             sendDocument.setChatId(user.getChatId());
             sendDocument.setDocument(new InputFile(FILE_ID));
             execute(sendDocument);
         } else {
             sendMessage.setText("Noto'g'ri buyruq kiritildi \uD83D\uDE33");
-            sendMessage.setReplyMarkup(buttonService.createButton(user.getPremium() ? ButtonConst.GET_FILE : ButtonConst.EMPTY));
+            sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.GET_FILE));
             execute(sendMessage);
         }
 

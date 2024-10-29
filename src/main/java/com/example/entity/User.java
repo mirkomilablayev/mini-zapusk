@@ -26,16 +26,6 @@ public class User {
     private Boolean hasEmploymentActivity = Boolean.FALSE;
     private String numberOfEmployees;
     private Boolean hasNumberOfEmployees = Boolean.FALSE;
-    private Boolean firstPart = Boolean.FALSE;
-    private Boolean premium = false;
-
     private String chatId;
-
-    private LocalDateTime paymentProcessTime;
-    private String cardNumber;
-    private String cardExp;
-    private Long transactionId;
-
     private String step;
-    private Boolean done = false;
 }
