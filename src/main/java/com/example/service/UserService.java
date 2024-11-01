@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.entity.User;
 import com.example.entity.UserRepository;
 import com.example.util.Steps;
+import com.example.util.UserStatus;
 import lombok.RequiredArgsConstructor;
 
 import org.json.JSONObject;
@@ -47,6 +48,7 @@ public class UserService {
             User user = new User();
             user.setChatId(chatId);
             user.setStep(Steps.NEW_USER);
+            user.setStatus(UserStatus.STARTER);
             return userRepository.save(user);
         }
         return userOptional.get();

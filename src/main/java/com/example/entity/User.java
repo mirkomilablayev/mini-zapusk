@@ -20,12 +20,17 @@ public class User {
     private Long id;
     private String fullName;
     private Boolean hasFullName = Boolean.FALSE;
+
     private String phoneNumber;
     private Boolean hasPhoneNumber = Boolean.FALSE;
+
     private String employmentActivity;
     private Boolean hasEmploymentActivity = Boolean.FALSE;
+
     private String numberOfEmployees;
     private Boolean hasNumberOfEmployees = Boolean.FALSE;
+
     private String chatId;
     private String step;
+    private String status;
 }
