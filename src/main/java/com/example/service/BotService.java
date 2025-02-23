@@ -15,9 +15,13 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.ForwardMessage;
 import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.*;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Component
@@ -32,7 +36,10 @@ public class BotService extends TelegramLongPollingBot {
 
 
     private static final String FILE_ID = "BQACAgIAAxkBAAIBOmcKfNuZSAqORoUdSqtf4guZL_JsAALcXAACPKpISGzRs0Ung6Y5NgQ";
+    private static final String VIDEO_MSG_FILE_ID = "DQACAgIAAxkBAAID2We4xq_WfP4BYlZLNL3qG5UiuVygAAJ5cwACHumwSdX8r3SvtcpINgQ";
+    private static final String VIDEO_FILE_ID = "BAACAgIAAxkBAAID3We4x19RiFCjtKt0pLI72uSAkw41AAJ3YQACZz64SXRC0dyvCUQvNgQ";
 
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Override
     public String getBotUsername() {
@@ -50,9 +57,10 @@ public class BotService extends TelegramLongPollingBot {
         User user = userService.createOrGetUser(update);
         String text = userService.getText(update);
         SendMessage sendMessage = getSendMessage(user);
+        Message message1 = update.getMessage();
 
 
-        if ("1813855034".equals(user.getChatId())) {
+        if (user.getIsAdmin()) {
 
             if (ButtonConst.SHARE_ADS.equals(text)) {
                 sendMessage.setText("Forward Message yuboring\n" +
@@ -70,17 +78,21 @@ public class BotService extends TelegramLongPollingBot {
                         sendMessageToUser(client.getChatId(), update.getMessage());
                     }
                 } else {
-                    user.setStep(Steps.NEW_USER);
-                    userRepository.save(user);
                     sendMessage.setText("Reklama kontentida xatolik bor");
                     sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.SHARE_ADS));
                     execute(sendMessage);
                 }
+                user.setStep(Steps.NEW_USER);
+                userRepository.save(user);
+            }
+
+            if (text.equals(ButtonConst.DOWNLOAD)) {
+                applicantsButtonClick(user);
             }
 
             if (Steps.NEW_USER.equals(user.getStep()) || ButtonConst.BACK_MAIN_MENU.equals(text)) {
                 sendMessage.setText("Admin Panel.....");
-                sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.SHARE_ADS));
+                sendMessage.setReplyMarkup(buttonService.adminMenu());
                 execute(sendMessage);
             }
 
@@ -89,13 +101,48 @@ public class BotService extends TelegramLongPollingBot {
 
         if (!user.getHasFullName()) {
             if (Steps.NEW_USER.equals(user.getStep())) {
-                sendMessage.setText(MessageConst.START_MESSAGE);
-                sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-                execute(sendMessage);
-                sendMessage.setText(MessageConst.FULL_NAME_MSG);
-                execute(sendMessage);
-                user.setStep(Steps.ASK_FULL_NAME);
-                userRepository.save(user);
+                SendVideo sendVideo = new SendVideo();
+
+                sendVideo.setVideo(new InputFile(VIDEO_MSG_FILE_ID));
+                sendVideo.setChatId(user.getChatId());
+                execute(sendVideo);
+
+
+                scheduler.schedule(() -> {
+                    sendVideo.setVideo(new InputFile(VIDEO_FILE_ID));
+                    sendVideo.setParseMode("MarkdownV2");
+
+                    sendVideo.setCaption("""
+                            ‼️ *Ko\\'rish muhim* ‼️
+
+                            Bu videoda:
+
+                            \\- _Kerakli instrumentlarni qayerdan olish mumkinligi_
+                            
+                            \\- _Tadbirkorlar uchun qanday foydalar bera olishimiz_
+                            
+                            \\- _O\\'zimiz haqimizda to\\'liq gapirib berganmiz_
+                            """);
+                    try {
+                        execute(sendVideo);
+                    } catch (TelegramApiException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, 60, TimeUnit.SECONDS);
+
+                scheduler.schedule(() -> {
+                    try {
+                        sendMessage.setText("Botdan to'laqonli foydalanish va Bepul darsliklarni qo'lga kiritish uchun ro'yxatdan o'ting\uD83D\uDC47");
+                        execute(sendMessage);
+
+                        sendMessage.setText(MessageConst.FULL_NAME_MSG);
+                        execute(sendMessage);
+                        user.setStep(Steps.ASK_FULL_NAME);
+                        userRepository.save(user);
+                    } catch (TelegramApiException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, 180, TimeUnit.SECONDS);
                 return;
             }
 
@@ -108,7 +155,6 @@ public class BotService extends TelegramLongPollingBot {
                     user.setFullName(text);
                     user.setHasFullName(true);
                     user.setStep(Steps.PHONE_NUMBER);
-                    user.setStatus(UserStatus.NOT_JOINED);
                     userRepository.save(user);
                 }
             }
@@ -168,64 +214,12 @@ public class BotService extends TelegramLongPollingBot {
             }
         }
 
-        if (!user.getHasNumberOfEmployees()) {
-            if (Steps.EMPLOYEE_COUNT.equals(user.getStep())) {
-                sendMessage.setText(MessageConst.EMPLOYEE_COUNT);
-                sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-                execute(sendMessage);
+        sendMessage.setText("""
+                Ro'yxatdan muvaffaqiyatli o'tdingiz!
 
-                user.setStep(Steps.EMPLOYEE_COUNT_ASK);
-                userRepository.save(user);
-                return;
-            }
-
-            if (Steps.EMPLOYEE_COUNT_ASK.equals(user.getStep())) {
-                if ("error_text".equals(text)) {
-                    sendMessage.setText(MessageConst.EMPLOYEE_COUNT);
-                    sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-                    execute(sendMessage);
-                    return;
-                } else {
-                    user.setNumberOfEmployees(text);
-                    user.setHasNumberOfEmployees(true);
-                    user.setStep(Steps.EMPLOYEE_COUNT);
-                    userRepository.save(user);
-
-                    sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.GET_FILE));
-                    sendMessage.setText("Siz gaydlarni olishingiz mumkin!");
-                    execute(sendMessage);
-                    return;
-                }
-            }
-        }
-
-        if (!userService.isSubscribed(botConfiguration.getChannelUsername(), botConfiguration.getToken(), user.getChatId())) {
-            if (!Steps.JOIN_CHANNEL.equals(user.getStep())) {
-                user.setStep(Steps.JOIN_CHANNEL);
-                userRepository.save(user);
-            }
-
-            SendMessage message = SendMessage.builder().chatId(user.getChatId()).text(MessageConst.JOIN_CHANNEL_MESSAGE).replyMarkup(buttonService.enterChannel(botConfiguration.getChannelUsername())).build();
-            execute(message);
-            return;
-        } else {
-            if (!UserStatus.JOINED_CHANNEL.equals(user.getStatus())) {
-                user.setStatus(UserStatus.JOINED_CHANNEL);
-                userRepository.save(user);
-            }
-        }
-
-        if (ButtonConst.GET_FILE.equals(text)) {
-            SendDocument sendDocument = new SendDocument();
-            sendDocument.setChatId(user.getChatId());
-            sendDocument.setDocument(new InputFile(FILE_ID));
-            execute(sendDocument);
-        } else {
-            sendMessage.setText("Noto'g'ri buyruq kiritildi \uD83D\uDE33");
-            sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.GET_FILE));
-            execute(sendMessage);
-        }
-
+                Quyidagi havola orqali va'da qilingan darsliklarni olishingiz mumkin\uD83D\uDC47""");
+        sendMessage.setReplyMarkup(buttonService.guideList1());
+        execute(sendMessage);
     }
 
     private SendMessage getSendMessage(User user) {
@@ -262,38 +256,6 @@ public class BotService extends TelegramLongPollingBot {
         return new FileDto(ContentType.NONE);
     }
 
-
-    // Initial delay and every 12 hours in milliseconds
-    @Scheduled(initialDelay = 12 * 60 * 60 * 1000, fixedRate = 12 * 60 * 60 * 1000)
-    public void pushNotification() throws Exception {
-        for (User user : userRepository.findAllByStatus(UserStatus.STARTER)) {
-            SendMessage sendMessage = getSendMessage(user);
-            sendMessage.setText("""
-                    Salom! Siz bilan Cubic Assistant!
-                    
-                    Biz bilan birinchi qadamni tashlaganingizni ko‘rdik, lekin jarayonni yakunlashni unutib qo‘ydingiz! \uD83D\uDE0A
-                    
-                    Xalqaro standartlar asosida marketing bo‘limini yaratish bo‘yicha PRAKTIKUMda ishtirok etish uchun ism va telefon raqamingizni qoldirishingiz kerak. Unutmang bu sizga biznesdagi sotuvlaringiz o'sishiga va marketing strategiyangizni yangi darajaga olib chiqishda yordam beradi! \uD83D\uDE80
-                    
-                    Nega Praktikumda ishtirok etishingiz kerak?
-                    Xalqaro darajada marketing bo‘limini tashkil qilishni o‘rganasiz.
-                    Bozorning o‘sish imkoniyatlarini to‘liq anglab yetasiz.
-                    Marketing jamoangizni qanday samarali boshqarishni bilib olasiz.
-                    
-                    
-                    \uD83D\uDC49 Jarayonni yakunlab, Praktikumda ishtirok etish uchun hoziroq ism va telefon raqamingizni qoldiring va o‘z biznesingizni yangi darajaga ko‘taring!""");
-            sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-            execute(sendMessage);
-        }
-
-
-        for (User user : userRepository.findAllByStatus(UserStatus.NOT_JOINED)) {
-            SendMessage sendMessage = getSendMessage(user);
-            sendMessage.setText("Salom! Siz bilan Cubic Assistant!\n" + "\n" + user.getFullName() + " Workshopga qo'shilishga juda yaqin turibsiz! \uD83D\uDE0A\n" + "\n" + "Siz allaqachon ma'lumotlaringizni qoldirdingiz, endi faqat shartni bajarib, xalqaro darajadagi marketing bo‘limini yaratish bo‘yicha workshopga kirsangiz bo‘ldi. \uD83D\uDE80\n" + "\n");
-            sendMessage.setReplyMarkup(buttonService.createButton(ButtonConst.EMPTY));
-            execute(sendMessage);
-        }
-    }
 
     private void sendMessageToUser(String recipientChatId, Message message) {
         try {
@@ -346,6 +308,29 @@ public class BotService extends TelegramLongPollingBot {
         } catch (Exception e) {
             e.printStackTrace(); // Handle any sending issues here
         }
+    }
+
+
+    private void applicantsButtonClick(User user) {
+        SendMessage sendMessage = getSendMessage(user);
+        try {
+            exportUsersDataToExcel(userService.applicantsExcel(), sendMessage, user);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private void exportUsersDataToExcel(java.io.File file, SendMessage sendMessage, User user) throws TelegramApiException {
+        if (file == null) {
+            sendMessage.setText("Fayl generatsiya qilishda xatolik!");
+            execute(sendMessage);
+            return;
+        }
+        SendDocument sendDocument = new SendDocument();
+        sendDocument.setChatId(user.getChatId());
+        sendDocument.setDocument(new InputFile(file));
+        execute(sendDocument);
     }
 
 }

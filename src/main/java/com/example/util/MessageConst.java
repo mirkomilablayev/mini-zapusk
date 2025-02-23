@@ -7,9 +7,9 @@ public interface MessageConst {
             "\n" +
             "Bu bor yo'g'i 30 soniya vaqtingizni oladi";
 
-    String FULL_NAME_MSG = "1. Davom etish uchun ismingizni (F.I.O) kiriting \uD83D\uDE42";
+    String FULL_NAME_MSG = "Ism Familiyangizni kiriting";
 
-    String EMPLOYMENT_ACTIVITY_MSG = "Biznesingiz turi?\nMasalan: Ishlab chiqarish";
+    String EMPLOYMENT_ACTIVITY_MSG = "Siz Tadbirkormisiz yoki Xodim?\nMasalan: Tadbirkor";
     String EMPLOYEE_COUNT = "Biznesingizda nechta xodim ishlaydi?\nMasalan: 8 ta";
     String JOIN_CHANNEL_MESSAGE = "Bugungi raqobatdosh dunyoda xalqaro bozorga chiqish - marketing bo‘limini professional darajada qurishdan boshlanadi. Agar sizning maqsadingiz xorijiy bozorlarda muvaffaqiyat qozonish bo‘lsa, bizning “Xalqaro darajada marketing bo‘limini qurish” praktikumimiz aynan siz uchun!\n" +
             "\n" +

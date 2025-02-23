@@ -19,8 +19,7 @@ public class BotConfiguration {
     private String username;
     @Value("${bot.token}")
     private String token;
-    @Value("${bot.channel}")
-    private String channelUsername;
+
 
 
     @Bean

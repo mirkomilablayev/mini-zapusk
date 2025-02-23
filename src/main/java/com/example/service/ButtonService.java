@@ -11,10 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IllegalFormatCodePointException;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +24,29 @@ public class ButtonService {
         } else {
             return createKeyboardWithText(buttonText);
         }
+    }
+
+    public ReplyKeyboard adminMenu() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = getReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRowList = new ArrayList<>();
+
+        KeyboardButton keyboardButton = new KeyboardButton(ButtonConst.SHARE_ADS);
+        KeyboardButton keyboardButton2 = new KeyboardButton(ButtonConst.DOWNLOAD);
+
+        KeyboardRow keyboardRow = new KeyboardRow(Collections.singletonList(keyboardButton));
+        keyboardRowList.add(keyboardRow);
+        keyboardRow = new KeyboardRow(Collections.singletonList(keyboardButton2));
+        keyboardRowList.add(keyboardRow);
+
+        replyKeyboardMarkup.setKeyboard(keyboardRowList);
+        return replyKeyboardMarkup;
+    }
+
+    private static ReplyKeyboardMarkup getReplyKeyboardMarkup() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+        return replyKeyboardMarkup;
     }
 
     private ReplyKeyboard createKeyboardRemove() {
@@ -69,6 +89,52 @@ public class ButtonService {
         markupInline.setKeyboard(rowsInline);
         return markupInline;
     }
+
+
+    public InlineKeyboardMarkup guideList() {
+        InlineKeyboardButton button1 = new InlineKeyboardButton("PDF Intrument");
+        button1.setUrl("https://t.me/Cubic_Business/3");
+        InlineKeyboardButton button2 = new InlineKeyboardButton("Video Darslik");
+        button2.setUrl("https://t.me/Cubic_Business/5");
+        InlineKeyboardButton button3 = new InlineKeyboardButton("Video Keys");
+        button3.setUrl("https://t.me/Cubic_Business/4");
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        row1.add(button1);
+        row1.add(button2);
+        row1.add(button3);
+        keyboardMarkup.setKeyboard(Collections.singletonList(row1));
+        return keyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup guideList1() {
+        InlineKeyboardButton button1 = new InlineKeyboardButton("PDF Instrument");
+        button1.setUrl("https://t.me/Cubic_Business/3");
+
+        InlineKeyboardButton button2 = new InlineKeyboardButton("Video Darslik");
+        button2.setUrl("https://t.me/Cubic_Business/5");
+
+        InlineKeyboardButton button3 = new InlineKeyboardButton("Video Keys");
+        button3.setUrl("https://t.me/Cubic_Business/4");
+
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        row1.add(button1);
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        row2.add(button2);
+        List<InlineKeyboardButton> row3 = new ArrayList<>();
+        row3.add(button3);
+
+        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+        rowsInline.add(row1);
+        rowsInline.add(row2);
+        rowsInline.add(row3);
+
+        keyboardMarkup.setKeyboard(rowsInline);
+        return keyboardMarkup;
+    }
+
 
 }
 

@@ -19,23 +19,10 @@ public class DataLoader implements CommandLineRunner {
 
     private final BotService botService;
 
-    @Value("${spring.jpa.hibernate.ddl-auto}")
-    private String ddl;
-
     @Override
     public void run(String... args) throws Exception {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(this.botService);
-
-        if (ddl.equalsIgnoreCase("create")
-                || ddl.equalsIgnoreCase("create-drop")) {
-            System.out.println();
-
-
-            log.info("------------------------------------");
-        }
-
-
     }
 
 

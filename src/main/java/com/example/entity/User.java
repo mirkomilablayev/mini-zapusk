@@ -27,10 +27,7 @@ public class User {
     private String employmentActivity;
     private Boolean hasEmploymentActivity = Boolean.FALSE;
 
-    private String numberOfEmployees;
-    private Boolean hasNumberOfEmployees = Boolean.FALSE;
-
     private String chatId;
     private String step;
-    private String status;
+    private Boolean isAdmin = false;
 }

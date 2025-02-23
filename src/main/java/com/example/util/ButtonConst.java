@@ -8,5 +8,6 @@ public interface ButtonConst {
     String EMPTY = "EMPTY";
     String GET_FILE = "Faylni olish ⬇️";
 
-    String SHARE_ADS = "Reklama Yuborish!";
+    String SHARE_ADS = "Reklama \uD83D\uDCE8";
+    String DOWNLOAD = "Yuklash ⬇️";
 }

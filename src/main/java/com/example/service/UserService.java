@@ -6,14 +6,18 @@ import com.example.util.Steps;
 import com.example.util.UserStatus;
 import lombok.RequiredArgsConstructor;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,22 +28,6 @@ public class UserService {
     private final UserRepository userRepository;
 
 
-    public boolean isSubscribed(String channelUsername, String botToken, String chatId) {
-        try {
-            HttpURLConnection conn = (HttpURLConnection) new URL("https://api.telegram.org/bot" + botToken + "/getChatMember?chat_id=" + channelUsername + "&user_id=" + chatId).openConnection();
-            conn.setRequestMethod("GET");
-
-            if (conn.getResponseCode() == 200) {
-                JSONObject jsonResponse = new JSONObject(new BufferedReader(new InputStreamReader(conn.getInputStream())).lines().collect(Collectors.joining()));
-
-                String status = jsonResponse.getJSONObject("result").getString("status");
-                return jsonResponse.getBoolean("ok") && ("member".equals(status) || "administrator".equals(status) || "creator".equals(status));
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return false;
-    }
 
     public User createOrGetUser(Update update) {
         String chatId = getChatId(update);
@@ -48,7 +36,6 @@ public class UserService {
             User user = new User();
             user.setChatId(chatId);
             user.setStep(Steps.NEW_USER);
-            user.setStatus(UserStatus.STARTER);
             return userRepository.save(user);
         }
         return userOptional.get();
@@ -82,6 +69,42 @@ public class UserService {
             return update.getEditedMessage().getChatId().toString();
         } else {
             return update.getMessage().getChatId().toString();
+        }
+    }
+
+
+    public File applicantsExcel() {
+        try {
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("User Data");
+
+            // Create the header row
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("F.I.O");
+            headerRow.createCell(1).setCellValue("Telefon raqami");
+            headerRow.createCell(2).setCellValue("Faoliyati");
+
+            int rowNum = 1;
+
+            List<User> userList = userRepository.findAll();
+            for (User applicant : userList) {
+                Row dataRow = sheet.createRow(rowNum++);
+                dataRow.createCell(0).setCellValue(applicant.getFullName());
+                dataRow.createCell(1).setCellValue(applicant.getPhoneNumber());
+                dataRow.createCell(2).setCellValue(applicant.getEmploymentActivity());
+            }
+            sheet.autoSizeColumn(1);
+            sheet.autoSizeColumn(2);
+
+            File excelFile = File.createTempFile("applicants-", ".xlsx");
+            try (FileOutputStream fileOut = new FileOutputStream(excelFile)) {
+                workbook.write(fileOut);
+            }
+
+            return excelFile;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
