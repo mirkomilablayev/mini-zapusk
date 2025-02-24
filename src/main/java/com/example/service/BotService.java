@@ -36,8 +36,8 @@ public class BotService extends TelegramLongPollingBot {
 
 
     private static final String FILE_ID = "BQACAgIAAxkBAAIBOmcKfNuZSAqORoUdSqtf4guZL_JsAALcXAACPKpISGzRs0Ung6Y5NgQ";
-    private static final String VIDEO_MSG_FILE_ID = "DQACAgIAAxkBAAID2We4xq_WfP4BYlZLNL3qG5UiuVygAAJ5cwACHumwSdX8r3SvtcpINgQ";
-    private static final String VIDEO_FILE_ID = "BAACAgIAAxkBAAID3We4x19RiFCjtKt0pLI72uSAkw41AAJ3YQACZz64SXRC0dyvCUQvNgQ";
+    private static final String VIDEO_MSG_FILE_ID = "DQACAgIAAxkBAAMDZ7s9iLZewHg8K-UuJywtyNR4yjEAAnlzAAIe6bBJn_Jwc4hhXRY2BA";
+    private static final String VIDEO_FILE_ID = "BAACAgIAAxkBAAMEZ7s9tUaEJRot6Tdrg7hslqlO50cAAndhAAJnPrhJMnJUJyqGemw2BA";
 
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -107,6 +107,10 @@ public class BotService extends TelegramLongPollingBot {
                 sendVideo.setChatId(user.getChatId());
                 execute(sendVideo);
 
+                sendMessage.setParseMode("Markdown");
+                sendMessage.setText("😊 *Assalomu alaykum*\n\n*Darslarni olishdan oldin bu videoxabarni ko'rish muhim* 👆");
+                execute(sendMessage);
+
 
                 scheduler.schedule(() -> {
                     sendVideo.setVideo(new InputFile(VIDEO_FILE_ID));
@@ -118,9 +122,9 @@ public class BotService extends TelegramLongPollingBot {
                             Bu videoda:
 
                             \\- _Kerakli instrumentlarni qayerdan olish mumkinligi_
-                            
+                                                        
                             \\- _Tadbirkorlar uchun qanday foydalar bera olishimiz_
-                            
+                                                        
                             \\- _O\\'zimiz haqimizda to\\'liq gapirib berganmiz_
                             """);
                     try {
